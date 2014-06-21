@@ -178,13 +178,13 @@
    Pg => 'concat_sql' => '? || ?',
 )</pre>
 
-      <pre>$dbii->decorate_driver_connected(
+      <div class="slide"><pre>$dbii->decorate_driver_connected(
    Pg => 'rdbms_version' => sub {
       my $dbh = shift;
 
       $dbh->selectcol_arrayref('SELECT VERSION()')->[0]
    },
-)</pre>
+)</pre></div>
    </div>
 
    <div class="slide">
@@ -207,18 +207,6 @@ $dbii->get(sub { $dbh }, $dsn, 'concat_sql', {
 
    <div class="slide">
       <img src="/img/game-over.png" />
-   </div>
-
-   <div class="slide">
-      <h2>Details: add_driver</h2>
-
-      <img src="/img/dl-pizza.gif" />
-   </div>
-
-   <div class="slide">
-      <h2>Details: replace_driver</h2>
-
-      <img src="/img/eat-drugs.gif" />
    </div>
 
    <div class="slide">
@@ -255,6 +243,57 @@ DBIx::Introspector::Driver->new({
    },
 })
       </pre>
+   </div>
+
+   <div class="slide">
+      <h2>Details: Driver (Mongo {made up example})</h2>
+
+      <pre>
+DBIx::Introspector::Driver->new({
+   name => 'Mongo',
+   parents => ['DBI'],
+})
+      </pre>
+   </div>
+
+   <div class="slide">
+      <h2>Details: add_driver</h2>
+
+      <img src="/img/dl-pizza.gif" />
+   </div>
+
+   <div class="slide">
+      <h2>Details: add_driver</h2>
+
+      <pre>$dbii->add_driver({
+   name => 'Mongo',
+   parents => ['DBI'],
+})</pre>
+   </div>
+
+   <div class="slide">
+      <h2>Details: replace_driver</h2>
+
+      <img src="/img/eat-drugs.gif" />
+   </div>
+
+   <div class="slide">
+      <h2>Details: replace_driver</h2>
+
+      <pre>$dbii->replace_driver({
+   name => 'DBI',
+   connected_determination_strategy => sub {
+      $_[1]->{Driver}{Name}
+         ? $_[1]->{Driver}{Name}
+         : $_[1]->{Driver}{MegaDrive}
+   },
+   unconnected_determination_strategy => sub {
+      my $dsn = $_[1] || $ENV{DBI_DSN} || '';
+      my ($driver) = $dsn =~ /dbi:([^:]+):/i;
+      $driver ||= $ENV{DBI_DRIVER};
+      return $driver
+   },
+})</pre>
    </div>
 
 <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
