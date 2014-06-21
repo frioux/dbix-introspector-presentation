@@ -156,8 +156,13 @@
    <div class="slide">
       <h2>Details: new</h2>
 
-
       <img src="/img/email.jpg" />
+   </div>
+
+   <div class="slide">
+      <h2>Details: new</h2>
+
+      <pre>DBIx::Introspector->new(drivers => '2013-12.01')</pre>
    </div>
 
    <div class="slide">
@@ -167,9 +172,41 @@
    </div>
 
    <div class="slide">
+      <h2>Details: decorate_driver_(un)connected</h2>
+
+      <pre>$dbii->decorate_driver_unconnected(
+   Pg => 'concat_sql' => '? || ?',
+)</pre>
+
+      <pre>$dbii->decorate_driver_connected(
+   Pg => 'rdbms_version' => sub {
+      my $dbh = shift;
+
+      $dbh->selectcol_arrayref('SELECT VERSION()')->[0]
+   },
+)</pre>
+   </div>
+
+   <div class="slide">
       <h2>Details: get</h2>
 
       <img src="/img/alien-painting.png" />
+   </div>
+
+   <div class="slide">
+      <h2>Details: get</h2>
+
+      <pre>$dbii->get($dbh, $dsn, 'concat_sql')</pre>
+      <div class="slide"><pre>my $dbh;
+$dbii->get(sub { $dbh }, $dsn, 'concat_sql', {
+   dbh_fallback_connect => sub {
+      $dbh = DBI->connect(...)
+   },
+});</pre></div>
+   </div>
+
+   <div class="slide">
+      <img src="/img/game-over.png" />
    </div>
 
    <div class="slide">
@@ -182,6 +219,42 @@
       <h2>Details: replace_driver</h2>
 
       <img src="/img/eat-drugs.gif" />
+   </div>
+
+   <div class="slide">
+      <h2>Details: Driver</h2>
+
+      <img src="/img/vcr.png" />
+   </div>
+
+   <div class="slide">
+      <h2>Details: Driver</h2>
+
+      <ul>
+         <li class="slide">name</li>
+         <li class="slide">parents</li>
+         <li class="slide">connected_options</li>
+         <li class="slide">unconnected_options</li>
+         <li class="slide">connected_determination_strategy</li>
+         <li class="slide">unconnected_determination_strategy</li>
+      </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Details: Driver (DBI)</h2>
+
+      <pre>
+DBIx::Introspector::Driver->new({
+   name => 'DBI',
+   connected_determination_strategy => sub { $_[1]->{Driver}{Name} },
+   unconnected_determination_strategy => sub {
+      my $dsn = $_[1] || $ENV{DBI_DSN} || '';
+      my ($driver) = $dsn =~ /dbi:([^:]+):/i;
+      $driver ||= $ENV{DBI_DRIVER};
+      return $driver
+   },
+})
+      </pre>
    </div>
 
 <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
